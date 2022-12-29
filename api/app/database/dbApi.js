@@ -3,13 +3,15 @@ module.exports = class Database {
         this.model = model;
     }
 
-    saveData = async (data, errorCallback) => {
-        return this.model.create(data, (error, data) => {
-
-            if (error) return errorCallback(error)
-            return data;
-        });
+    saveData = async (data) => {
+        return this.model.create(data);
     }
 
+    deleteDataItemById = async (data) => {
+        return this.model.findByIdAndDelete(data);
+    }
 
+    updateDataItemById = async (id, data) => {
+        return this.model.findByIdAndUpdate(id, data, {new: true})
+    }
 }

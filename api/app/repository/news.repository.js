@@ -3,30 +3,36 @@ const {default: axios} = require("axios");
 const Database = require('../database/dbApi');
 const Variables = require("../helpers/variables");
 const Utils = require("../helpers/utils");
-const DbErrorHandler = require("../helpers/dbErrorHandler");
+const triggerError = require('../helpers/errorHandler');
 
 const dbNews = new Database(News);
 
 class NewsRepository {
     getAllTasksFromCybersport = async () => {
 
+        try {
+            const response = await axios.get(Variables.cybersportNewsLineLink);
 
-        const response = await axios.get(Variables.cybersportNewsLineLink);
+            const data = await Promise.all(response.data.data.map(async (item) => {
+                return {
+                    '_id': item.id,
+                    'title': item.attributes.title,
+                    'publishedAt': item.attributes.publishedAt,
+                    'slug': item.attributes.slug,
+                    'image': item.attributes.image,
+                    'text': await this.getTextDataFromCybersport(item.id)
+                }
+            }));
 
-        const data = await Promise.all(response.data.data.map(async (item) => {
-            return {
-                '_id': item.id,
-                'title': item.attributes.title,
-                'publishedAt': item.attributes.publishedAt,
-                'slug': item.attributes.slug,
-                'image': item.attributes.image,
-                'text': await this.getTextDataFromCybersport(item.id)
-            }
-        }));
+            return await dbNews.saveData(data);
 
-        await dbNews.saveData(data, (err) => DbErrorHandler.handleError(err) );
+        } catch (error) {
 
-        return data
+            triggerError({
+                status: 400, message: error.message
+            });
+
+        }
     }
 
     getTextDataFromCybersport = async (newsId) => {
@@ -39,8 +45,8 @@ class NewsRepository {
                     return Utils.clearHtmlTags(item.data.text)
                 }
 
-            }catch (err){
-                return '' ;
+            } catch (err) {
+                return '';
             }
 
         })
@@ -54,9 +60,41 @@ class NewsRepository {
             return await dbNews.saveData(newsData);
 
         } catch (error) {
-            throw error;
+
+            triggerError({
+                status: 400, message: error.message
+            });
+
+        }
+    }
+
+    deleteNewsById = async (newsId) => {
+        try {
+
+            return await dbNews.deleteDataItemById(newsId);
+
+        } catch (error) {
+
             console.error(error);
 
+            triggerError({
+                status: 400, message: error.message
+            });
+        }
+    }
+
+    updateNewsById = async (newsId, newsData) => {
+        try {
+
+            return await dbNews.updateDataItemById(newsId, newsData);
+
+        } catch (error) {
+
+            console.error(error);
+
+            triggerError({
+                status: 400, message: error.message
+            });
         }
     }
 }

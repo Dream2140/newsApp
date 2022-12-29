@@ -6,7 +6,7 @@ const whitelist = [
     'image/jpeg',
     'image/jpg',
     'image/webp'
-]
+];
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -16,9 +16,10 @@ const storage = multer.diskStorage({
         cb(null, file.fieldname + '_' + Date.now() + '.jpg');
     }
 });
+
 const upload = multer({
     storage: storage,
-    fileFilter: (req, file, cb)=>{
+    fileFilter: (req, file, cb) => {
         if (!whitelist.includes(file.mimetype)) {
             req.fileValidationError = "Forbidden file extension";
             cb(null, false, req.fileValidationError);
@@ -30,14 +31,26 @@ const upload = multer({
     }
 });
 
+
 const router = express();
 
 const newsController = require('../controllers/news.controller');
 
-const createNewsValidator = require('../validators/news/createNewsValidator');
+const createNewsValidator = require('../validators/joi/news/createNewsValidator');
+
+const deleteNewsValidator = require('../validators/joi/news/deleteNewsValidator');
+
+const updateNewsValidator = require('../validators/joi/news/updateNewsValidator');
+
+const newsImageValidator = require('../validators/custom/news/newsImageValidator');
+
 
 router.post('/update-from-cybersport/', newsController.getAllNewsFromCybersport);
 
-router.post('/post-news/', upload.single('image'),createNewsValidator, newsController.createNews  );
+router.post('/post-news/', upload.single('image'), newsImageValidator, createNewsValidator, newsController.createNews);
+
+router.delete('/delete-news/:id/', deleteNewsValidator, newsController.deleteNewsById);
+
+router.put('/update-news/:id/', updateNewsValidator, newsController.updateNewsById);
 
 module.exports = router;

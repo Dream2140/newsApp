@@ -8,6 +8,14 @@ class NewsService {
     createNews = async (newsData) => {
         return await NewsRepository.createNews(newsData);
     }
+
+    deleteNewsById = async (newsId) => {
+        return await NewsRepository.deleteNewsById(newsId);
+    }
+
+    updateNewsById = async (newsId, newsData) => {
+        return await NewsRepository.updateNewsById(newsId, newsData);
+    }
 }
 
 module.exports = new NewsService();

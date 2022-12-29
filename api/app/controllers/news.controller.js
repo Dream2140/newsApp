@@ -1,6 +1,7 @@
 const newsService = require('../services/news.service');
 const multer = require('multer');
 const crypto = require('crypto');
+
 class NewsController {
 
     getAllNewsFromCybersport = async (req, res) => {
@@ -13,25 +14,18 @@ class NewsController {
         } catch (err) {
             console.error(err);
 
-            res.status(500).send({
-                message: "Some error occurred while getting news list from cybersport.ru."
+            res.status(err.cause?.status || 500).send({
+                message: err.cause?.message || "Some error occurred while getting news list from cybersport.ru."
             });
         }
     }
 
     createNews = async (req, res) => {
         try {
-            if (req.file.size > 5000000) {
-                return res.status(400).send('Image must be less than 5 MB in size');
-            }
-            if (req.fileValidationError) {
-                return res.status(400).send('File should be an image');
-            }
 
             const imagePath = 'downloads/' + req.file.originalname;
 
-            const newsData= {
-                _id:"4757f196-f91c-4dd0-b3b5-d2f0bddebb8b",
+            const newsData = {
                 title: req.body.title,
                 publishedAt: req.body.publishedAt,
                 text: req.body.text,
@@ -47,8 +41,52 @@ class NewsController {
         } catch (err) {
             console.error(err);
 
+            res.status(err.cause?.status || 500).send({
+                message: err.cause?.message || "Some error occurred while creating news"
+            });
+        }
+    }
+
+    deleteNewsById = async (req, res) => {
+        try {
+
+            const newsId = req.body.id
+
+            const data = await newsService.deleteNewsById(newsId);
+
+            if (!data) {
+
+                return res.status(400).send({
+                    message: `Cannot delete news. Maybe news was not found`
+                });
+            }
+
+            return res.status(200).send({
+                message: `News with ${newsId}  was deleted successfully.`
+            });
+
+        } catch (err) {
+            console.error(err);
+
             res.status(500).send({
-                message: "Some error occurred while creating news"
+                message: "Some error occurred while deleting"
+            });
+        }
+    }
+
+    updateNewsById = async (req, res) => {
+        try {
+            const newsId = req.params.id;
+
+            const task = await newsService.updateNewsById(newsId, req.body);
+
+            return res.send(task);
+
+        } catch (err) {
+            console.error(err);
+
+            res.status(err.cause?.status || 500).send({
+                message: err.cause?.message || "Some error occurred while updating news."
             });
         }
     }
