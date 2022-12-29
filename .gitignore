@@ -51,6 +51,7 @@ node_modules
 jspm_packages
 bower_components
 uploads
+.next
 
 # Optional npm cache directory
 .npm
