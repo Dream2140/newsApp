@@ -3,15 +3,22 @@ module.exports = class Database {
         this.model = model;
     }
 
-    saveData = async (data) => {
-        return this.model.create(data);
+    saveData = async (data,errorCallback) => {
+        return  this.model.create(data,(err) => errorCallback);
     }
 
     deleteDataItemById = async (data) => {
-        return this.model.findByIdAndDelete(data);
+        return  this.model.findByIdAndDelete(data);
     }
 
     updateDataItemById = async (id, data) => {
         return this.model.findByIdAndUpdate(id, data, {new: true})
+    }
+
+    getDataByRegex = async (criteria) => {
+        return await this.model.find(criteria);
+    }
+    checkExistence = async (criteria)=>{
+        return await this.model.findOne(criteria)
     }
 }

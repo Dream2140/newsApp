@@ -78,9 +78,26 @@ class NewsController {
         try {
             const newsId = req.params.id;
 
-            const task = await newsService.updateNewsById(newsId, req.body);
+            const updatedNews = await newsService.updateNewsById(newsId, req.body);
 
-            return res.send(task);
+            return res.send(updatedNews);
+
+        } catch (err) {
+            console.error(err);
+
+            res.status(err.cause?.status || 500).send({
+                message: err.cause?.message || "Some error occurred while updating news."
+            });
+        }
+    }
+
+    getNewsByTitle = async (req, res) => {
+        try {
+            const newsTitle = req.body.title;
+
+            const news = await newsService.getNewsByTitle(newsTitle);
+
+            return res.send(news);
 
         } catch (err) {
             console.error(err);

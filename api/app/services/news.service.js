@@ -16,6 +16,10 @@ class NewsService {
     updateNewsById = async (newsId, newsData) => {
         return await NewsRepository.updateNewsById(newsId, newsData);
     }
+
+    getNewsByTitle = async (newsTitle) => {
+        return await NewsRepository.getNewsByTitle(newsTitle);
+    }
 }
 
 module.exports = new NewsService();

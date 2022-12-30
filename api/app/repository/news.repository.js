@@ -19,12 +19,18 @@ class NewsRepository {
                     'title': item.attributes.title,
                     'publishedAt': item.attributes.publishedAt,
                     'slug': item.attributes.slug,
-                    'image': item.attributes.image,
+                    'image': Variables.cybersportImageLink + item.attributes.image,
                     'text': await this.getTextDataFromCybersport(item.id)
                 }
             }));
 
-            return await dbNews.saveData(data);
+            return await dbNews.saveData(data,(err) => {
+                if (err.code === 11000) {
+                    return;
+                }
+                console.error(err);
+                throw err;
+            });
 
         } catch (error) {
 
@@ -37,19 +43,21 @@ class NewsRepository {
 
     getTextDataFromCybersport = async (newsId) => {
         const news = await axios.get(Variables.cybersportOneNewsLink + newsId);
-        const text = news.data.data.attributes.content.blocks.map(item => {
 
-            try {
+        const text = news.data.data.attributes.content.blocks
+            .map(item => {
 
-                if (item.data.text) {
-                    return Utils.clearHtmlTags(item.data.text)
+                try {
+
+                    if (item.data.text) {
+                        return Utils.clearHtmlTags(item.data.text)
+                    }
+
+                } catch (err) {
+                    return;
                 }
-
-            } catch (err) {
-                return '';
-            }
-
-        })
+            })
+            .join(' ')
 
         return text;
     }
@@ -87,6 +95,22 @@ class NewsRepository {
         try {
 
             return await dbNews.updateDataItemById(newsId, newsData);
+
+        } catch (error) {
+
+            console.error(error);
+
+            triggerError({
+                status: 400, message: error.message
+            });
+        }
+    }
+
+    getNewsByTitle = async (newsTitle) => {
+        try {
+            const regex = new RegExp(newsTitle, 'i');
+
+            return await dbNews.getDataByRegex({title: regex});
 
         } catch (error) {
 

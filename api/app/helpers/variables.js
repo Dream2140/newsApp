@@ -1,4 +1,5 @@
 module.exports = class Variables {
-    static cybersportNewsLineLink = 'https://www.cybersport.ru/api/materials?page%5Boffset%5D=0&page%5Blimit%5D=200&sort=-publishedAt';
+    static cybersportNewsLineLink = 'https://www.cybersport.ru/api/materials?pageoffset=0&pagelimit=200&sort=-publishedAt';
     static cybersportOneNewsLink = 'https://www.cybersport.ru/api/materials/';
+    static cybersportImageLink = 'https://virtus-img.cdnvideo.ru/images/material-card/plain/';
 }

@@ -42,6 +42,8 @@ const deleteNewsValidator = require('../validators/joi/news/deleteNewsValidator'
 
 const updateNewsValidator = require('../validators/joi/news/updateNewsValidator');
 
+const getNewsByTitleValidator = require('../validators/joi/news/getNewsByTitleValidator');
+
 const newsImageValidator = require('../validators/custom/news/newsImageValidator');
 
 
@@ -52,5 +54,7 @@ router.post('/post-news/', upload.single('image'), newsImageValidator, createNew
 router.delete('/delete-news/:id/', deleteNewsValidator, newsController.deleteNewsById);
 
 router.put('/update-news/:id/', updateNewsValidator, newsController.updateNewsById);
+
+router.get('/get-news-by-title/', getNewsByTitleValidator, newsController.getNewsByTitle);
 
 module.exports = router;

@@ -4,7 +4,7 @@ const crypto = require("crypto");
 const NewsSchema = new Schema({
     _id: { type: String, default: ()=> crypto.randomUUID() },
     title: { type: String },
-    text: { type: String },
+    text: { type: Object },
     publishedAt: {type: Number},
     slug:  { type: String },
     image: { type: String },
