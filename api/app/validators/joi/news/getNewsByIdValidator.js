@@ -4,7 +4,11 @@ const validateRequest = require('../index');
 
 const schema = Joi.object({
     params: {
-        title: Joi.string().min(3)
+        id: Joi.string().guid({
+            version: [
+                'uuidv4'
+            ]
+        }).required(),
     }
 }).unknown(true);
 

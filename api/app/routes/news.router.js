@@ -50,17 +50,19 @@ const newsImageValidator = require('../validators/custom/news/newsImageValidator
 
 const getAllNewsValidator = require('../validators/joi/news/getAllNewsValidator');
 
-router.post('/update-from-cybersport/', newsController.getAllNewsFromCybersport);
+router.get('/update-from-cybersport/', newsController.getAllNewsFromCybersport);
 
 router.post('/post-news/', upload.single('image'), newsImageValidator, createNewsValidator, newsController.createNews);
 
 router.delete('/delete-news/:id/', deleteNewsValidator, newsController.deleteNewsById);
 
+router.delete('/delete-all-news/', newsController.deleteAllNews);
+
 router.put('/update-news/:id/', updateNewsValidator, newsController.updateNewsById);
 
 router.get('/get-news-by-title/', getNewsByTitleValidator, newsController.getNewsByTitle);
 
-//router.get('/get-news-by-id/:id/', getNewsByIdValidator, newsController.getNewsById);
+router.get('/get-news-by-id/:id/', getNewsByIdValidator, newsController.getNewsById);
 
 router.get('/get-all-news/', getAllNewsValidator, newsController.getAllNews);
 

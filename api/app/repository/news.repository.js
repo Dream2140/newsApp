@@ -1,9 +1,10 @@
 const News = require('../models/news.model');
-const { default: axios } = require("axios");
+const {default: axios} = require("axios");
 const Database = require('../database/dbApi');
 const Variables = require("../helpers/variables");
 const Utils = require("../helpers/utils");
 const triggerError = require('../helpers/errorHandler');
+const crypto = require('crypto');
 
 const dbNews = new Database(News);
 
@@ -15,7 +16,7 @@ class NewsRepository {
 
             const data = await Promise.all(response.data.data.map(async (item) => {
                 return {
-                    '_id': item.id,
+                    '_id': crypto.randomUUID(),
                     'title': item.attributes.title,
                     'publishedAt': item.attributes.publishedAt,
                     'slug': item.attributes.slug,
@@ -110,7 +111,7 @@ class NewsRepository {
         try {
             const regex = new RegExp(newsTitle, 'i');
 
-            return await dbNews.getDataByRegex({ title: regex });
+            return await dbNews.getDataByСriteria({title: regex});
 
         } catch (error) {
 
@@ -124,16 +125,46 @@ class NewsRepository {
 
     getAllNews = async (page, limit) => {
         try {
-        
+
             const options = limit === '-1' ? {
                 pagination: false,
             } : {
                 page: page,
                 limit: limit,
-                sort: { date: -1 }
+                sort: {date: -1}
             };
 
             return await News.paginate({}, options);
+
+        } catch (error) {
+
+            console.error(error);
+
+            triggerError({
+                status: 400, message: error.message
+            });
+        }
+    }
+
+    getNewsById = async (newsId) => {
+        try {
+
+            return await dbNews.getDataByСriteria({_id: newsId});
+
+        } catch (error) {
+
+            console.error(error);
+
+            triggerError({
+                status: 400, message: error.message
+            });
+        }
+    }
+
+    deleteAllNews = async (newsId) => {
+        try {
+
+            return await dbNews.deleteAllData();
 
         } catch (error) {
 

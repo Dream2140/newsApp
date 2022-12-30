@@ -25,6 +25,13 @@ class NewsService {
         return await NewsRepository.getAllNews(page, limit);
     }
 
+    getNewsById = async (newsId) => {
+        return await NewsRepository.getNewsById(newsId);
+    }
+
+    deleteAllNews = async (newsId) => {
+        return await NewsRepository.deleteAllNews();
+    }
 }
 
 module.exports = new NewsService();

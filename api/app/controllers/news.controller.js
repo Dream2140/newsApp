@@ -1,6 +1,4 @@
 const newsService = require('../services/news.service');
-const multer = require('multer');
-const crypto = require('crypto');
 
 class NewsController {
 
@@ -125,6 +123,46 @@ class NewsController {
 
             res.status(err.cause?.status || 500).send({
                 message: err.cause?.message || "Some error occurred while getting all news."
+            });
+        }
+    }
+
+    getNewsById = async (req, res) => {
+        try {
+            const newsId = req.params.id;
+
+            const news = await newsService.getNewsById(newsId);
+
+            return res.send(news);
+
+        } catch (err) {
+            console.error(err);
+
+            res.status(err.cause?.status || 500).send({
+                message: err.cause?.message || "Some error occurred while getting news by id."
+            });
+        }
+    }
+
+    deleteAllNews = async (req, res) => {
+        try {
+            const news = await newsService.deleteAllNews();
+
+            if (news.deletedCount > 0) {
+                return res.send({
+                    message: `${news.deletedCount} news were deleted successfully!`
+                });
+            }
+
+            return res.send({
+                message: `Nothing to delete`
+            });
+
+        } catch (err) {
+            console.error(err);
+
+            res.status(err.cause?.status || 500).send({
+                message: err.cause?.message || "Some error occurred while getting news by id."
             });
         }
     }

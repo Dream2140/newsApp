@@ -15,7 +15,7 @@ module.exports = class Database {
         return this.model.findByIdAndUpdate(id, data, {new: true})
     }
 
-    getDataByRegex = async (criteria) => {
+    getDataByСriteria= async (criteria) => {
         return await this.model.find(criteria);
     }
 
@@ -27,6 +27,10 @@ module.exports = class Database {
         return await this.model.find()
         .skip((page - 1) * limit)
         .limit(limit);
+    }
+
+    deleteAllData = async ()=>{
+        return await this.model.deleteMany();
     }
 
 }
