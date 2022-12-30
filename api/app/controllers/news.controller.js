@@ -110,13 +110,15 @@ class NewsController {
 
     getAllNews = async (req, res) => {
         try {
-            
+
             const page = req.query.page || 1;
             const limit = req.query.limit || 10;
 
             const news = await newsService.getAllNews(page, limit);
 
-            return res.send(news);
+            return res.json({
+                news
+            });
 
         } catch (err) {
             console.error(err);

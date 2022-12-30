@@ -1,5 +1,5 @@
 const News = require('../models/news.model');
-const {default: axios} = require("axios");
+const { default: axios } = require("axios");
 const Database = require('../database/dbApi');
 const Variables = require("../helpers/variables");
 const Utils = require("../helpers/utils");
@@ -24,7 +24,7 @@ class NewsRepository {
                 }
             }));
 
-            return await dbNews.saveData(data,(err) => {
+            return await dbNews.saveData(data, (err) => {
                 if (err.code === 11000) {
                     return;
                 }
@@ -110,7 +110,7 @@ class NewsRepository {
         try {
             const regex = new RegExp(newsTitle, 'i');
 
-            return await dbNews.getDataByRegex({title: regex});
+            return await dbNews.getDataByRegex({ title: regex });
 
         } catch (error) {
 
@@ -124,7 +124,16 @@ class NewsRepository {
 
     getAllNews = async (page, limit) => {
         try {
-            return await dbNews.getAllData(page, limit);
+        
+            const options = limit === '-1' ? {
+                pagination: false,
+            } : {
+                page: page,
+                limit: limit,
+                sort: { date: -1 }
+            };
+
+            return await News.paginate({}, options);
 
         } catch (error) {
 
@@ -135,6 +144,7 @@ class NewsRepository {
             });
         }
     }
+
 }
 
 module.exports = new NewsRepository();

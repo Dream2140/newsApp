@@ -28,4 +28,5 @@ module.exports = class Database {
         .skip((page - 1) * limit)
         .limit(limit);
     }
+
 }

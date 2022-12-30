@@ -44,8 +44,11 @@ const updateNewsValidator = require('../validators/joi/news/updateNewsValidator'
 
 const getNewsByTitleValidator = require('../validators/joi/news/getNewsByTitleValidator');
 
+const getNewsByIdValidator = require('../validators/joi/news/getNewsByIdValidator');
+
 const newsImageValidator = require('../validators/custom/news/newsImageValidator');
 
+const getAllNewsValidator = require('../validators/joi/news/getAllNewsValidator');
 
 router.post('/update-from-cybersport/', newsController.getAllNewsFromCybersport);
 
@@ -57,6 +60,8 @@ router.put('/update-news/:id/', updateNewsValidator, newsController.updateNewsBy
 
 router.get('/get-news-by-title/', getNewsByTitleValidator, newsController.getNewsByTitle);
 
-router.get('/get-all-news/', newsController.getAllNews);
+//router.get('/get-news-by-id/:id/', getNewsByIdValidator, newsController.getNewsById);
+
+router.get('/get-all-news/', getAllNewsValidator, newsController.getAllNews);
 
 module.exports = router;
