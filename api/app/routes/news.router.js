@@ -57,4 +57,6 @@ router.put('/update-news/:id/', updateNewsValidator, newsController.updateNewsBy
 
 router.get('/get-news-by-title/', getNewsByTitleValidator, newsController.getNewsByTitle);
 
+router.get('/get-all-news/', newsController.getAllNews);
+
 module.exports = router;

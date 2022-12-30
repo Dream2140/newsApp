@@ -18,7 +18,14 @@ module.exports = class Database {
     getDataByRegex = async (criteria) => {
         return await this.model.find(criteria);
     }
+
     checkExistence = async (criteria)=>{
         return await this.model.findOne(criteria)
+    }
+
+    getAllData = async (page, limit)=>{
+        return await this.model.find()
+        .skip((page - 1) * limit)
+        .limit(limit);
     }
 }

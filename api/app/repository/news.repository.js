@@ -121,6 +121,20 @@ class NewsRepository {
             });
         }
     }
+
+    getAllNews = async (page, limit) => {
+        try {
+            return await dbNews.getAllData(page, limit);
+
+        } catch (error) {
+
+            console.error(error);
+
+            triggerError({
+                status: 400, message: error.message
+            });
+        }
+    }
 }
 
 module.exports = new NewsRepository();

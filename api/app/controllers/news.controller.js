@@ -108,6 +108,25 @@ class NewsController {
         }
     }
 
+    getAllNews = async (req, res) => {
+        try {
+            
+            const page = req.query.page || 1;
+            const limit = req.query.limit || 10;
+
+            const news = await newsService.getAllNews(page, limit);
+
+            return res.send(news);
+
+        } catch (err) {
+            console.error(err);
+
+            res.status(err.cause?.status || 500).send({
+                message: err.cause?.message || "Some error occurred while getting all news."
+            });
+        }
+    }
+
 }
 
 module.exports = new NewsController();

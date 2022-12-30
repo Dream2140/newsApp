@@ -20,6 +20,10 @@ class NewsService {
     getNewsByTitle = async (newsTitle) => {
         return await NewsRepository.getNewsByTitle(newsTitle);
     }
+
+    getAllNews = async (page, limit) => {
+        return await NewsRepository.getAllNews(page, limit);
+    }
 }
 
 module.exports = new NewsService();
