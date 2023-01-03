@@ -7,7 +7,7 @@ const userController = require('../controllers/user.controller');
 const createUserValidator = require('../validators/joi/user/createUserValidator');
 
 
-router.post('/update-from-cybersport/', createUserValidator, userController.createUser);
+router.post('/register-user/', createUserValidator, userController.createUser);
 
 
 module.exports = router;

@@ -14,7 +14,7 @@ class UserRepository {
 
     createUser = async (userData) => {
         try {
-            return await dbNews.saveData(newsData);
+            return await dbNews.saveData(userData);
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
