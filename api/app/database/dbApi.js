@@ -3,8 +3,8 @@ module.exports = class Database {
         this.model = model;
     }
 
-    saveData = async (data,errorCallback) => {
-        return  this.model.create(data,(err) => errorCallback);
+    saveData = async (data) => {
+        return  this.model.create(data);
     }
 
     deleteDataItemById = async (data) => {

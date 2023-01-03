@@ -1,112 +1,65 @@
 const userService = require('../services/user.service');
+const newsService = require("../services/news.service");
 
 class UserController {
 
-    getAllNewsFromCybersport = async (req, res) => {
+    createUser = async (req, res, next) => {
         try {
 
-            const data = await newsService.getAllTasksFromCybersport();
+            const {nickname, email, password} = req.body;
 
-            return res.status(200).send(data);
+            const userData = await userService.createUser(nickname, email, password);
 
-        } catch (err) {
-            console.error(err);
+            res.cookie('refreshToken', userData.refreshToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
 
-            res.status(err.cause?.status || 500).send({
-                message: err.cause?.message || "Some error occurred while getting news list from cybersport.ru."
-            });
+            return res.status(200).json(userData);
+
+        } catch (e) {
+            next(e);
         }
     }
 
-    createNews = async (req, res) => {
+    deleteNewsById = async (req, res, next) => {
         try {
 
-            const imagePath = 'downloads/' + req.file.originalname;
+            const {id} = req.body;
 
-            const newsData = {
-                title: req.body.title,
-                publishedAt: req.body.publishedAt,
-                text: req.body.text,
-                slug: req.body.slug,
-                image: imagePath
-            }
+            const data = await newsService.deleteNewsById(id);
 
-            const data = await newsService.createNews(newsData);
+            return res.status(200).json(data);
 
-            return res.status(200).send(data);
-
-
-        } catch (err) {
-            console.error(err);
-
-            res.status(err.cause?.status || 500).send({
-                message: err.cause?.message || "Some error occurred while creating news"
-            });
+        } catch (e) {
+            next(e);
         }
     }
 
-    deleteNewsById = async (req, res) => {
+    updateNewsById = async (req, res, next) => {
         try {
+            const {id} = req.params;
 
-            const newsId = req.body.id
+            const updatedNews = await newsService.updateNewsById(id, req.body);
 
-            const data = await newsService.deleteNewsById(newsId);
+            return res.status(200).json(updatedNews);
 
-            if (!data) {
-
-                return res.status(400).send({
-                    message: `Cannot delete news. Maybe news was not found`
-                });
-            }
-
-            return res.status(200).send({
-                message: `News with ${newsId}  was deleted successfully.`
-            });
-
-        } catch (err) {
-            console.error(err);
-
-            res.status(500).send({
-                message: "Some error occurred while deleting"
-            });
+        } catch (e) {
+            next(e);
         }
     }
 
-    updateNewsById = async (req, res) => {
+    getNewsByTitle = async (req, res, next) => {
         try {
-            const newsId = req.params.id;
 
-            const updatedNews = await newsService.updateNewsById(newsId, req.body);
+            const {title} = req.body;
+            const news = await newsService.getNewsByTitle(title);
 
-            return res.send(updatedNews);
+            return res.status(200).json(news);
 
-        } catch (err) {
-            console.error(err);
-
-            res.status(err.cause?.status || 500).send({
-                message: err.cause?.message || "Some error occurred while updating news."
-            });
+        } catch (e) {
+            next(e);
         }
     }
 
-    getNewsByTitle = async (req, res) => {
-        try {
-            const newsTitle = req.body.title;
-
-            const news = await newsService.getNewsByTitle(newsTitle);
-
-            return res.send(news);
-
-        } catch (err) {
-            console.error(err);
-
-            res.status(err.cause?.status || 500).send({
-                message: err.cause?.message || "Some error occurred while updating news."
-            });
-        }
-    }
-
-    getAllNews = async (req, res) => {
+    getAllNews = async (req, res, next) => {
         try {
 
             const page = req.query.page || 1;
@@ -114,59 +67,38 @@ class UserController {
 
             const news = await newsService.getAllNews(page, limit);
 
-            return res.json({
-                news
-            });
+            return res.status(200).json(news);
 
-        } catch (err) {
-            console.error(err);
-
-            res.status(err.cause?.status || 500).send({
-                message: err.cause?.message || "Some error occurred while getting all news."
-            });
+        } catch (e) {
+            next(e);
         }
     }
 
-    getNewsById = async (req, res) => {
+    getNewsById = async (req, res, next) => {
         try {
-            const newsId = req.params.id;
 
-            const news = await newsService.getNewsById(newsId);
+            const {id} = req.params;
+            const news = await newsService.getNewsById(id);
 
-            return res.send(news);
+            return res.status(200).json(news);
 
-        } catch (err) {
-            console.error(err);
-
-            res.status(err.cause?.status || 500).send({
-                message: err.cause?.message || "Some error occurred while getting news by id."
-            });
+        } catch (e) {
+            next(e);
         }
     }
 
-    deleteAllNews = async (req, res) => {
+    deleteAllNews = async (req, res, next) => {
         try {
             const news = await newsService.deleteAllNews();
 
-            if (news.deletedCount > 0) {
-                return res.send({
-                    message: `${news.deletedCount} news were deleted successfully!`
-                });
-            }
+            return res.status(200).json(news);
 
-            return res.send({
-                message: `Nothing to delete`
-            });
-
-        } catch (err) {
-            console.error(err);
-
-            res.status(err.cause?.status || 500).send({
-                message: err.cause?.message || "Some error occurred while getting news by id."
-            });
+        } catch (e) {
+            next(e);
         }
     }
 
+
 }
 
-module.exports = new NewsController();
+module.exports = new UserController();

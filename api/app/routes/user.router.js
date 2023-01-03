@@ -2,13 +2,12 @@ const express = require('express');
 
 const router = express();
 
-const newsController = require('../controllers/news.controller');
+const userController = require('../controllers/user.controller');
 
-const createNewsValidator = require('../validators/joi/news/createNewsValidator');
+const createUserValidator = require('../validators/joi/user/createUserValidator');
 
 
-
-router.get('/update-from-cybersport/', newsController.getAllNewsFromCybersport);
+router.post('/update-from-cybersport/', createUserValidator, userController.createUser);
 
 
 module.exports = router;

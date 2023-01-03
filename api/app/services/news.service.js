@@ -1,4 +1,5 @@
 const NewsRepository = require('../repository/news.repository');
+const ApiError = require("../exceptions/ApiError");
 
 class NewsService {
 
@@ -10,7 +11,14 @@ class NewsService {
     }
 
     deleteNewsById = async (newsId) => {
-        return await NewsRepository.deleteNewsById(newsId);
+
+        const data = await NewsRepository.deleteNewsById(newsId);
+
+        if (!data) {
+            throw ApiError.NotFoundRequest(`Cannot delete news. Maybe news was not found`)
+        }
+
+        return `News with ${newsId}  was deleted successfully.`;
     }
 
     updateNewsById = async (newsId, newsData) => {
@@ -29,8 +37,15 @@ class NewsService {
         return await NewsRepository.getNewsById(newsId);
     }
 
-    deleteAllNews = async (newsId) => {
-        return await NewsRepository.deleteAllNews();
+    deleteAllNews = async () => {
+
+        const news = await NewsRepository.deleteAllNews()
+
+        if (news.deletedCount > 0) {
+            return `${news.deletedCount} news were deleted successfully!`;
+        }
+
+        return `Nothing to delete`
     }
 }
 
