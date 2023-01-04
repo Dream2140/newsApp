@@ -11,17 +11,6 @@ class UserService {
 
     createUser = async (userData) => {
 
-        const isNicknameDuplicate = await userRepository.checkUserDuplicate({nickname: userData.nickname});
-        const isMailDuplicate = await userRepository.checkUserDuplicate({email: userData.email});
-
-        if (isNicknameDuplicate) {
-            throw ApiError.BadRequest(`Nickname ${userData.nickname} already exists`);
-        }
-
-        if (isMailDuplicate) {
-            throw ApiError.BadRequest(`User with email ${userData.email} already exists`);
-        }
-
         userData.password = await bcrypt.hash(userData.password, 3);
         userData.activationLink = crypto.randomUUID();
 
@@ -29,12 +18,17 @@ class UserService {
         await mailService.sendActivationMail(userData.email, `${process.env.API_URL}/api/user/activate/${userData.activationLink}`);
 
         const userDto = new UserDto(user);
+
         const tokens = tokenService.generateTokens({...userDto});
+
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         return {...tokens, user: userDto}
 
-        return await userRepository.createUser(userData);
+
+    }
+    checkUserDuplicate = async (userData) => {
+        return await userRepository.checkUserDuplicate(userData);
     }
 
     deleteNewsById = async (newsId) => {

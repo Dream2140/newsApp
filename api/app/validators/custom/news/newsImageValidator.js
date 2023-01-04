@@ -1,9 +1,14 @@
-module.exports = function  newsImageValidator(req, res, next){
+const ApiError = require('../../../exceptions/ApiError');
+
+module.exports = function newsImageValidator(req, res, next) {
+    if (!req.file) {
+        throw ApiError.BadRequest('Image is required field');
+    }
     if (req.file.size > 5000000) {
-        return res.status(400).send({message:'Image must be less than 5 MB in size'});
+        throw ApiError.BadRequest('Image must be less than 5 MB in size');
     }
     if (req.fileValidationError) {
-        return res.status(400).send({message:'File should be an image type'});
+        throw ApiError.BadRequest('File should be an image type');
     }
     next();
 }

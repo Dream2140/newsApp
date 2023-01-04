@@ -1,8 +1,11 @@
 const {Schema, model} = require('mongoose');
 const crypto = require("crypto");
+const {ObjectId} = require('mongodb');
+
+console.log(ObjectId(crypto.randomUUID()))
 
 const UserSchema = new Schema({
-    _id: {type: String, default: () => crypto.randomUUID(), unique: true},
+    _id: {type: Schema.Types.ObjectId, default: () => ObjectId(crypto.randomUUID())},
     nickname: {
         type: String,
         required: true
