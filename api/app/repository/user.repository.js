@@ -47,7 +47,7 @@ class UserRepository {
 
     getUserById = async (userId) => {
         try {
-            return await dbNews.getDataByСriteria({_id: userId}, 'nickname email role isActivated');
+            return await dbNews.getOneDataByСriteria({_id: userId}, 'nickname email role isActivated');
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }

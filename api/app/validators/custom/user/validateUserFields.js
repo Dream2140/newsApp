@@ -43,7 +43,6 @@ class validateUser {
     validateRefreshToken = async (req, res, next) => {
 
         const {refreshToken} = req.cookies;
-
         if (!refreshToken) {
             throw ApiError.UnauthorizedError();
         }
