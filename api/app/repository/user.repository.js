@@ -1,12 +1,6 @@
 const User = require('../models/user.model');
-const {default: axios} = require("axios");
 const Database = require('../database/dbApi');
-const Variables = require("../helpers/variables");
-const Utils = require("../helpers/utils");
-const triggerError = require('../exceptions/ApiError');
-const crypto = require('crypto');
 const ApiError = require("../exceptions/ApiError");
-const News = require("../models/news.model");
 
 const dbNews = new Database(User);
 
@@ -21,58 +15,45 @@ class UserRepository {
 
     }
 
-    deleteNewsById = async (newsId) => {
+    deleteUserById = async (userId) => {
         try {
-            return await dbNews.deleteDataItemById(newsId);
+            return await dbNews.deleteDataItemById(userId);
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
     }
 
-    updateNewsById = async (newsId, newsData) => {
+    updateUserById = async (userId, userData) => {
         try {
-            return await dbNews.updateDataItemById(newsId, newsData);
+            return await dbNews.updateDataItemById(userId, userData);
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
     }
 
-    getNewsByTitle = async (newsTitle) => {
-        try {
-
-            const regex = new RegExp(newsTitle, 'i');
-
-            return await dbNews.getDataByСriteria({title: regex});
-        } catch (error) {
-            throw ApiError.DataBaseError(error)
-        }
-    }
-
-    getAllNews = async (page, limit) => {
+    getAllUsers = async (page, limit) => {
         try {
             const options = limit === '-1' ? {
-                pagination: false,
+                select: 'nickname email role isActivated', pagination: false,
             } : {
-                page: page,
-                limit: limit,
-                sort: {date: -1}
+                select: 'nickname email role isActivated', page: page, limit: limit, sort: {date: -1}
             };
 
-            return await News.paginate({}, options);
+            return await User.paginate({}, options);
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
     }
 
-    getNewsById = async (newsId) => {
+    getUserById = async (userId) => {
         try {
-            return await dbNews.getDataByСriteria({_id: newsId});
+            return await dbNews.getDataByСriteria({_id: userId}, 'nickname email role isActivated');
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
     }
 
-    deleteAllNews = async (newsId) => {
+    deleteAllUsers = async () => {
         try {
             return await dbNews.deleteAllData();
         } catch (error) {
@@ -83,6 +64,30 @@ class UserRepository {
     checkUserDuplicate = async (criteria) => {
         const user = await dbNews.checkExistence(criteria);
         return !!user;
+    }
+
+    loginUser = async (userMail) => {
+        try {
+            return await dbNews.getOneDataByСriteria({email: userMail});
+        } catch (error) {
+            throw ApiError.DataBaseError(error)
+        }
+    }
+
+    activateUser = async (activationLink) => {
+        try {
+
+            const user = await dbNews.getOneDataByСriteria({activationLink});
+
+            if (!user) {
+                throw ApiError.BadRequest('Wrong activation link');
+            }
+
+            return await dbNews.updateDataItemById(user._id, {isActivated: true});
+
+        } catch (error) {
+            throw ApiError.DataBaseError(error)
+        }
     }
 }
 

@@ -4,7 +4,7 @@ const userService = require('../../../services/user.service');
 
 class validateUser {
 
-     validateNickname = async (req, res, next) => {
+    validateRegisterNickname = async (req, res, next) => {
 
         const nickname = req.body.nickname;
 
@@ -16,13 +16,36 @@ class validateUser {
 
         next();
     }
-     validateEmail = async (req, res, next) => {
+    validateRegisterEmail = async (req, res, next) => {
         const email = req.body.email;
 
         const isMailDuplicate = await userService.checkUserDuplicate({email: email});
 
         if (isMailDuplicate) {
             throw ApiError.BadRequest(`User with email ${email} already exists`);
+        }
+
+        next();
+    }
+
+    validateLoginEmail = async (req, res, next) => {
+        const email = req.body.email;
+
+        const isMailExist = await userService.checkUserDuplicate({email: email});
+
+        if (!isMailExist) {
+            throw ApiError.BadRequest(`User with email ${email} is not registered`);
+        }
+
+        next();
+    }
+
+    validateRefreshToken = async (req, res, next) => {
+
+        const {refreshToken} = req.cookies;
+
+        if (!refreshToken) {
+            throw ApiError.UnauthorizedError();
         }
 
         next();

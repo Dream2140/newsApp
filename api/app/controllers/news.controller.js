@@ -40,7 +40,7 @@ class NewsController {
     deleteNewsById = async (req, res, next) => {
         try {
 
-            const {id} = req.body;
+            const {id} = req.params;
 
             const data = await newsService.deleteNewsById(id);
 

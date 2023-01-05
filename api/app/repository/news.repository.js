@@ -122,7 +122,7 @@ class NewsRepository {
         }
     }
 
-    deleteAllNews = async (newsId) => {
+    deleteAllNews = async () => {
         try {
             return await dbNews.deleteAllData();
         } catch (error) {

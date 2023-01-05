@@ -1,11 +1,13 @@
 const {Schema, model} = require('mongoose');
 const crypto = require("crypto");
-const {ObjectId} = require('mongodb');
+const paginate = require("mongoose-paginate-v2");
 
-console.log(ObjectId(crypto.randomUUID()))
 
 const UserSchema = new Schema({
-    _id: {type: Schema.Types.ObjectId, default: () => ObjectId(crypto.randomUUID())},
+    _id: {
+        type: String,
+        default: () => crypto.randomUUID(),
+    },
     nickname: {
         type: String,
         required: true
@@ -27,5 +29,7 @@ const UserSchema = new Schema({
     isActivated: {type: Boolean, default: false},
     activationLink: {type: String},
 });
+
+UserSchema.plugin(paginate);
 
 module.exports = model('User', UserSchema);
