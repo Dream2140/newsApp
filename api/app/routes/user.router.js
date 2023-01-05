@@ -18,7 +18,7 @@ const loginUserValidation = require('../validators/joi/user/loginUserValidation'
 
 router.post('/register/', createUserValidator, validateUser.validateRegisterNickname, validateUser.validateRegisterEmail, userController.createUser);
 
-router.get('/user-info/:id', validateUserId, userController.getUserById);
+router.get('/user-info/:id',  validateUserId, userController.getUserById);
 
 router.get('/all-users/', authAminMiddleware, userController.getAllUsers);
 
