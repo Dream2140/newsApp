@@ -1,5 +1,8 @@
 router = require("express-promise-router")();
 
+const authUserMiddleware= require('../middlewares/auth.user.middleware');
+const authAminMiddleware= require('../middlewares/auth.admin.middleware');
+
 const userController = require('../controllers/user.controller');
 
 const createUserValidator = require('../validators/joi/user/createUserValidation');
@@ -17,11 +20,11 @@ router.post('/register/', createUserValidator, validateUser.validateRegisterNick
 
 router.get('/user-info/:id', validateUserId, userController.getUserById);
 
-router.get('/all-users/', userController.getAllUsers);
+router.get('/all-users/',authMiddleware, userController.getAllUsers);
 
-router.delete('/delete-user/:id', validateUserId, userController.deleteUserById);
+router.delete('/delete-user/:id',authAminMiddleware, validateUserId, userController.deleteUserById);
 
-router.delete('/delete-all-users/', userController.deleteAllUsers);
+router.delete('/delete-all-users/',authAminMiddleware, userController.deleteAllUsers);
 
 router.put('/update-user/:id', updateUserValidator, userController.updateUserById);
 
