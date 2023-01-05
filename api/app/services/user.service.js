@@ -34,7 +34,7 @@ class UserService {
     deleteUserById = async (userId) => {
 
         const data = await userRepository.deleteUserById(userId);
-        console.log(data)
+
         if (!data) {
             throw ApiError.NotFoundRequest(`Cannot delete user with id ${userId}. Maybe user was not found`)
         }

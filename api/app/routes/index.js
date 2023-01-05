@@ -10,7 +10,7 @@ router.use('/news/', newsRouter);
 
 router.use('/user/', userRouter);
 
-router.use('/comments/', commentsRouter);
+router.use('/comment/', commentsRouter);
 
 router.all('*', (request, response) => {
     response.status(404).json({message:'Route not found'});

@@ -16,7 +16,7 @@ const schema = Joi.object({
                 'uuidv4'
             ]
         }).required(),
-        publishedAt: Joi.date(),
+        publishedAt: Joi.string(),
     }
 }).unknown(true);
 
