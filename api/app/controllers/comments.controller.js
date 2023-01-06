@@ -64,6 +64,17 @@ class CommentsController {
             next(e);
         }
     }
+
+    getAllUserComments = async (req, res, next) => {
+        try {
+            const { id } = req.params;
+            const commentsList = await commentService.getAllUserComments(id);
+            return res.status(200).json(commentsList);
+
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 module.exports = new CommentsController();

@@ -6,17 +6,21 @@ const router = express();
 const commentsController = require('../controllers/comments.controller');
 
 const createCommentValidator = require('../validators/joi/comment/createCommentValidator');
-const getCommentValidator= 
+
+const commentIdValidator = require('../validators/joi/comment/createCommentValidator');
+
+const updateCommentValidator = require('../validators/joi/comment/updateCommentValidator');
 
 router.post('/',createCommentValidator, commentsController.createComment);
 
-router.get('/:id', commentsController.getComment);
+router.get('/:id',commentIdValidator, commentsController.getComment);
 
-router.put('/:id', commentsController.udateCommentById);
+router.put('/:id',updateCommentValidator, commentsController.udateCommentById);
 
-router.delete('/:id', commentsController.deleteCommentById);
+router.delete('/:id',commentIdValidator, commentsController.deleteCommentById);
 
-router.get('/new-comemnts', commentsController.getAllNewsComments);
+router.get('/news-coments/:id',commentIdValidator, commentsController.getAllNewsComments);
 
+router.get('/user-coments/:id',commentIdValidator, commentsController.getAllUserComments);
 
 module.exports = router;

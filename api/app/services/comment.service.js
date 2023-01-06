@@ -28,6 +28,10 @@ class CommentService {
     getAllNewsComments = async (newsId) => {
         return await commentRepository.getAllNewsComments(newsId);
     }
+
+    getAllUserComments = async (userId) => {
+        return await commentRepository.getAllUserComments(userId);
+    }
 }
 
 module.exports = new CommentService();
