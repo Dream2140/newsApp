@@ -26,7 +26,7 @@ app.use('/api/', router);
 app.use(errorMiddleware);
 
 
-const PORT = process.env.API_PORT;
+const PORT = process.env.PORT;
 
 (async () => {
     try {
