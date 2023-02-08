@@ -64,6 +64,6 @@ router.get('/get-news-by-title/', getNewsByTitleValidator, newsController.getNew
 
 router.get('/get-news-by-id/:id/', getNewsByIdValidator, newsController.getNewsById);
 
-router.get('/get-all-news/', getAllNewsValidator, newsController.getAllNews);
+router.get('/get-all-news/', newsController.getAllNews);
 
 module.exports = router;

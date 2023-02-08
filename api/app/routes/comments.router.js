@@ -19,7 +19,7 @@ router.put('/:id',updateCommentValidator, commentsController.udateCommentById);
 
 router.delete('/:id',commentIdValidator, commentsController.deleteCommentById);
 
-router.get('/news-coments/:id',commentIdValidator, commentsController.getAllNewsComments);
+router.get('/news-coments/:id', commentsController.getAllNewsComments);
 
 router.get('/user-coments/:id',commentIdValidator, commentsController.getAllUserComments);
 

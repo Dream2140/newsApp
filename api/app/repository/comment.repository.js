@@ -39,7 +39,9 @@ class CommentRepository {
 
     getAllNewsComments = async (newsId) => {
         try {
+            console.log(newsId)
             return await dbComment.getDataByСriteria({news:newsId});
+
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }

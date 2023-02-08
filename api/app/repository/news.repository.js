@@ -44,22 +44,26 @@ class NewsRepository {
     getTextDataFromCybersport = async (newsId) => {
         const news = await axios.get(Variables.cybersportOneNewsLink + newsId);
 
-        const text = news.data.data.attributes.content.blocks
-            .map(item => {
+        try {
+            const text = news.data.data.attributes.content.blocks
+                .map(item => {
 
-                try {
+                    try {
 
-                    if (item.data.text) {
-                        return Utils.clearHtmlTags(item.data.text)
+                        if (item.data.text) {
+                            return Utils.clearHtmlTags(item.data.text)
+                        }
+
+                    } catch (err) {
+                        return;
                     }
+                })
+                .join(' ')
 
-                } catch (err) {
-                    return;
-                }
-            })
-            .join(' ')
-
-        return text;
+            return text;
+        } catch (e){
+            return ''
+        }
     }
 
     createNews = async (newsData) => {
@@ -105,10 +109,12 @@ class NewsRepository {
             } : {
                 page: page,
                 limit: limit,
-                sort: {date: -1}
+
             };
 
-            return await News.paginate({}, options);
+            const news= await News.paginate({}, options);
+
+            return news
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }

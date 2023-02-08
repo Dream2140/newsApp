@@ -9,6 +9,11 @@ import InputBase from '@mui/material/InputBase';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import LoginModal from "./LoginModal";
+import {useState} from "react";
+import Backdrop from "@mui/material/Backdrop";
+import {useDispatch, useSelector} from "react-redux";
+import {closeModal, openModal} from "../store/actions/modal";
 
 
 const Search = styled('div')(({theme}) => ({
@@ -53,19 +58,32 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 
 export default function Header() {
 
+    const user = useSelector(state => state.user);
+    const dispatch = useDispatch();
+    const modalOpen = useSelector(state => state.modal);
+
+    const handleOpen = () => {
+        dispatch(openModal('loginModal'));
+    };
+
+    const handleClose = () => {
+        dispatch(closeModal());
+    };
+
     const menuId = 'primary-search-account-menu';
 
     return (
-        <Box sx={{flexGrow: 1}}>
-            <AppBar position="static">
+        <>
+            <AppBar position="fixed">
                 <Toolbar>
                     <Typography
+                        href="/"
                         variant="h6"
                         noWrap
-                        component="h1"
-                        sx={{display: {xs: 'none', sm: 'block'}}}
+                        component="a"
+                        sx={{display: {xs: 'none', sm: 'block',}, color: 'inherit', textDecoration: 'none'}}
                     >
-                        Dream News Site
+                        Dream News
                     </Typography>
                     <Search>
                         <SearchIconWrapper>
@@ -77,25 +95,36 @@ export default function Header() {
                         />
                     </Search>
                     <Box sx={{flexGrow: 1}}/>
-                    <Box gap={1} sx={{display:'flex', flexDirection:"row", justifyContent:'center', alignItems:'center'}}>
+                    <Box gap={1}
+                         sx={{display: 'flex', flexDirection: "row", justifyContent: 'center', alignItems: 'center'}}>
                         <Box><DarkModeIcon/> </Box>
-                        <Box><Typography sx={{}} variant={"subtitle2"} component={'h6'}>Dream2140</Typography></Box>
+                        <Box><Typography sx={{}} variant={"subtitle2"} component={'h6'}>
+
+                            {user.nickname||''}
+                        </Typography></Box>
                         <Box>
                             <IconButton
+                                onClick={handleOpen}
                                 size="large"
                                 edge="end"
                                 aria-label="account of current user"
                                 aria-controls={menuId}
                                 aria-haspopup="true"
-
                                 color="inherit"
                             >
+
                                 <AccountCircle/>
                             </IconButton>
                         </Box>
                     </Box>
                 </Toolbar>
             </AppBar>
-        </Box>
+
+                <LoginModal
+                    open={modalOpen}
+                    handleClose={handleClose}
+                />
+
+        </>
     );
 }

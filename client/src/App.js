@@ -1,12 +1,16 @@
+import {RouterProvider} from "react-router-dom";
+import router from "./router";
 import Header from "./components/Header";
-import CssBaseline from '@mui/material/CssBaseline';
+import React from "react";
+
 function App() {
-  return (
-      <>
-      <CssBaseline />
-    <Header/>
+    return (
+        <>
+            <Header/>
+            <RouterProvider router={router}/>
         </>
-  );
+    )
+        ;
 }
 
 export default App;

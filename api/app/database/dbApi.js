@@ -20,6 +20,7 @@ module.exports = class Database {
     }
 
     getDataByСriteria = async (criteria, fields) => {
+
         return await this.model.find(criteria, fields);
     }
 

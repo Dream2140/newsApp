@@ -1,4 +1,4 @@
-require('dotenv').config({path:"../.env"});
+require('dotenv').config({path: "../.env"});
 
 const express = require('express');
 const mongoose = require("mongoose");
@@ -14,10 +14,12 @@ const app = express();
 app.use(morgan('tiny'));
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({
-    credentials: true,
-    origin: process.env.CLIENT_URL
-}));
+app.use(cors(
+    {
+        origin: ['http://localhost:3001', 'http://localhost:3000'],
+        credentials: true
+    }
+));
 
 app.use('/api/', router);
 
