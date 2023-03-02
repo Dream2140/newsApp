@@ -61,10 +61,9 @@ const reducer = (state = initialState, action) => {
                 error: null,
             };
         case DELETE_COMMENT_SUCCESS:
-            const updatedComments = state.comments.filter(comment => comment._id !== action.payload);
             return {
                 ...state,
-                comments: updatedComments,
+                comments: state.comments.filter(comment => comment._id !== action.payload),
                 isLoading: false,
                 error: null,
             };

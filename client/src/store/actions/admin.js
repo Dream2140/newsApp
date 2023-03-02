@@ -31,7 +31,8 @@ export const fetchUsersList = (params) => async (dispatch) => {
 export const adminUpdateUserData = (userId, editedUsers) => async (dispatch) => {
     dispatch({type: UPDATE_USER});
     try {
-        const users = await AdminService.changeUser(userId, editedUsers);
+        await AdminService.changeUser(userId, editedUsers);
+
         dispatch({
             type: UPDATE_USER_SUCCESS
         });
@@ -49,7 +50,7 @@ export const postNews = (newsFields) => async (dispatch) => {
         type: POST_NEWS,
     });
     try {
-        const news = await AdminService.postNews(newsFields);
+        await AdminService.postNews(newsFields);
 
         dispatch({
             type: POST_NEWS_SUCCESS
@@ -73,7 +74,7 @@ export const fetchExternalNews = (source) => async (dispatch) => {
     });
     try {
 
-        const news = await AdminService.fetchExternalNews(source);
+        await AdminService.fetchExternalNews(source);
 
         dispatch({
             type: FETCH_EXTERNAL_NEWS_SUCCESS

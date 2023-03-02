@@ -82,7 +82,7 @@ export const updateUserData = (userData) => async (dispatch, getState) => {
     dispatch({type: UPDATE_USER_DATA});
     try {
         const userId = getState()
-        const users = await UserService.changeUser(userId.user.id, userData);
+        await UserService.changeUser(userId.user.id, userData);
         dispatch({
             type: UPDATE_USER_DATA_SUCCESS,
             payload: userData
@@ -103,7 +103,7 @@ export const updateUserPassword = (currentPassword, newPassword) => async (dispa
     try {
         const userId = getState();
 
-        const users = await UserService.changePassword(userId.user.id, currentPassword, newPassword);
+        await UserService.changePassword(userId.user.id, currentPassword, newPassword);
 
         dispatch({
             type: UPDATE_USER_PASSWORD_SUCCESS

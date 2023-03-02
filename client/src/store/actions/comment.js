@@ -76,7 +76,7 @@ export const deleteComment = (commentId) => async (dispatch) => {
         type: DELETE_COMMENT,
     });
     try {
-        const news = await ProfileService.deleteComment(commentId);
+        await ProfileService.deleteComment(commentId);
 
         dispatch({
             type: DELETE_COMMENT_SUCCESS

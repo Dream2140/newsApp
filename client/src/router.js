@@ -1,5 +1,6 @@
 import Home from "./pages/Home";
 import Article from "./pages/Article";
+import React from 'react';
 import Profile from "./pages/Profile";
 import App from "./App";
 import ErrorPage from "./pages/ErrorPage";

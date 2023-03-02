@@ -1,4 +1,5 @@
 import ReactDOM from 'react-dom/client';
+import React from 'react';
 import './index.css';
 import CssBaseline from "@mui/material/CssBaseline";
 import {Provider} from "react-redux";
