@@ -39,20 +39,36 @@ class UserService {
             throw ApiError.NotFoundRequest(`Cannot delete user with id ${userId}. Maybe user was not found`)
         }
 
-        await tokenService.deleteToken({user:userId})
+        await tokenService.deleteToken({user: userId})
 
         return {message: `User with ${userId}  was deleted successfully.`};
     }
 
     updateUserById = async (userId, userData) => {
-        console.log(userData)
-        if (!userData.nickname && !userData.password) {
-            throw ApiError.BadRequest('You have write at least one field (nickname or password)')
+
+        if (!userData || Object.keys(userData).length === 0) {
+            throw ApiError.BadRequest('You have write at least one field')
         }
 
-        const updatedUser = await userRepository.updateUserById(userId, userData);
-        const userDto = new UserDto(updatedUser);
-        return userDto;
+        return await userRepository.updateUserById(userId, userData);
+    }
+
+    updatePassword = async (userId, currentPassword, newPassword) => {
+
+        const user = await userRepository.getUserPassword(userId);
+
+        if (!user) {
+            throw ApiError.BadRequest('User not found');
+        }
+        const isPassEquals = await bcrypt.compare(currentPassword, user.password);
+
+        if (!isPassEquals) {
+            throw ApiError.BadRequest('Wrong password');
+        }
+
+        user.password = await bcrypt.hash(newPassword, 3);
+
+        return await userRepository.updateUserById(userId, {password: user.password});
     }
 
     getAllUsers = async (page, limit) => {
@@ -115,7 +131,7 @@ class UserService {
         const userDto = new UserDto(user);
         const tokens = tokenService.generateTokens({...userDto});
 
-       
+
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
         return {...tokens, user: userDto}

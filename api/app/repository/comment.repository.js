@@ -15,15 +15,15 @@ class CommentRepository {
 
     getComment = async (commentId) => {
         try {
-            return await dbComment.getOneDataByСriteria({_id:commentId});
+            return await dbComment.getOneDataByCriteria({_id: commentId});
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
     }
 
-    udateCommentById = async (commentId,data) => {
+    udateCommentById = async (commentId, data) => {
         try {
-            return await dbComment.updateDataItemById(commentId,data);
+            return await dbComment.updateDataItemById(commentId, data);
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
@@ -39,8 +39,8 @@ class CommentRepository {
 
     getAllNewsComments = async (newsId) => {
         try {
-            console.log(newsId)
-            return await dbComment.getDataByСriteria({news:newsId});
+
+            return await dbComment.getDataByCriteria({news: newsId});
 
         } catch (error) {
             throw ApiError.DataBaseError(error)
@@ -49,7 +49,7 @@ class CommentRepository {
 
     getAllUserComments = async (userId) => {
         try {
-            return await dbComment.getDataByСriteria({user:userId});
+            return await dbComment.getDataByCriteria({user: userId});
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }

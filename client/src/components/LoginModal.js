@@ -1,27 +1,26 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Fade, FormHelperText, Modal, useTheme} from "@mui/material";
+import {Button, CircularProgress, Fade, FormHelperText, Modal, useTheme} from "@mui/material";
 import EmailInput from "./form/EmailInput";
 import PasswordInput from "./form/PasswordInput";
 import NicknameInput from "./form/NicknameInput";
 import {useDispatch, useSelector} from "react-redux";
 import {loginUser, registerUser} from "../store/actions/user";
 
-
 const LoginModal = ({open, handleClose}) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const user = useSelector(state => state.user);
     const [error, setError] = useState('')
-
+    const isLoading = useSelector(state => state.user.isLoading)
     const errorMessage = useSelector(state => state.user.error);
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [nickname, setNickname] = useState('');
 
-    useEffect(()=>{
+    useEffect(() => {
         setError(errorMessage)
-    },[user.error])
+    }, [user.error])
 
     const [form, setForm] = useState({
         login: true,
@@ -35,7 +34,7 @@ const LoginModal = ({open, handleClose}) => {
         setForm({...form, email, password, nickname});
     }, [email, password, nickname])
 
-    const handleSubmit = async  (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (form.login) {
@@ -45,8 +44,6 @@ const LoginModal = ({open, handleClose}) => {
         }
 
     }
-
-
 
     const handleSwitchForm = () => {
         setForm({...form, login: !form.login});
@@ -72,14 +69,16 @@ const LoginModal = ({open, handleClose}) => {
                         border: '2px solid #000',
                         boxShadow: theme.shadows[5],
                         padding: theme.spacing(2, 4, 3),
-                        zIndex: 2000
+                        zIndex: 1000
                     }}>
+
                         <form style={{
                             width: '100%',
                             marginTop: theme.spacing(1),
                         }}
                               onSubmit={handleSubmit}
                         >
+
                             {form.login ? (
                                 <>
                                     <EmailInput onChange={setEmail}/>
@@ -100,11 +99,31 @@ const LoginModal = ({open, handleClose}) => {
                                 fullWidth
                                 variant="contained"
                                 color="primary"
-                                sx={{margin: theme.spacing(3, 0, 2),}}
-                                disabled={form.login ? !email || !password :
-                                    (!nickname || !email || !password)}
-                            >
-                                {form.login ? 'Login' : 'Register'}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    height: '45px',
+                                    width: '100%',
+                                    padding: '0 16px',
+                                    marginTop: '15px'
+                                }}
+
+                            >   {isLoading ? (
+                                <CircularProgress
+                                    size={24}
+                                    style={{
+                                        color: 'white',
+                                        position: 'absolute',
+                                        top: '50%',
+                                        left: '50%',
+                                        marginTop: -12,
+                                        marginLeft: -12,
+                                    }}
+                                />
+                            ) : (
+                                form.login ? 'Login' : 'Register'
+                            )}
                             </Button>
 
                         </form>
@@ -120,7 +139,6 @@ const LoginModal = ({open, handleClose}) => {
                                 (<p> Already have an account? <b>Login</b></p>)
                             }
                         </div>
-
                     </div>
                 </Fade>
             </Modal>

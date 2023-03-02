@@ -1,9 +1,13 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TextField} from "@mui/material";
 
 const PasswordInput = ({onChange}) => {
     const [passwordError, setPasswordError] = useState(false);
     const [password, setPassword] = useState('');
+
+    useEffect(() => {
+        onChange(passwordError ? null : password);
+    }, [password, passwordError, onChange]);
 
     const handleChange = (event) => {
         setPassword(event.target.value);
@@ -12,7 +16,6 @@ const PasswordInput = ({onChange}) => {
             event.target.value.length < 8 ||
             event.target.value.length > 25
         );
-        onChange(passwordError ? null : password);
     };
 
     return (

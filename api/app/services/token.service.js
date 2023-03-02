@@ -3,7 +3,7 @@ const tokenRepository = require('../repository/token.repository');
 
 class TokenService {
     generateTokens(payload) {
-        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '15m'});
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {expiresIn: '1d'});
         const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {expiresIn: '30d'});
 
         return {
@@ -14,10 +14,7 @@ class TokenService {
 
     validateAccessToken(token) {
         try {
-            const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-            console.log(userData)
-            return userData;
-
+            return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
         } catch (e) {
             return null;
         }
@@ -26,9 +23,7 @@ class TokenService {
     validateRefreshToken(token) {
         try {
 
-            const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-
-            return userData;
+            return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
 
         } catch (e) {
             throw e;
@@ -44,30 +39,26 @@ class TokenService {
 
         }
 
-        const token = await tokenRepository.saveToken({user: userId, refreshToken});
+        return await tokenRepository.saveToken({user: userId, refreshToken});
 
-        return token;
     }
 
     async deleteToken(refreshToken) {
 
-        const tokenData = await tokenRepository.deleteToken(refreshToken);
+        return await tokenRepository.deleteToken(refreshToken);
 
-        return tokenData;
     }
 
     async deleteAllTokens() {
 
-        const tokenData = await tokenRepository.deleteAllTokens();
+        return await tokenRepository.deleteAllTokens();
 
-        return tokenData;
     }
 
     async findToken(refreshToken) {
 
-        const tokenData = await tokenRepository.getToken({refreshToken});
+        return await tokenRepository.getToken({refreshToken});
 
-        return tokenData;
     }
 }
 

@@ -31,6 +31,14 @@ class UserRepository {
         }
     }
 
+    updatePassword = async (userId, userData) => {
+        try {
+            return await dbNews.updateDataItemById(userId, userData);
+        } catch (error) {
+            throw ApiError.DataBaseError(error)
+        }
+    }
+
     getAllUsers = async (page, limit) => {
         try {
             const options = limit === '-1' ? {
@@ -47,7 +55,14 @@ class UserRepository {
 
     getUserById = async (userId) => {
         try {
-            return await dbNews.getOneDataByСriteria({_id: userId}, 'nickname email role isActivated');
+            return await dbNews.getOneDataByCriteria({_id: userId}, 'nickname email role isActivated');
+        } catch (error) {
+            throw ApiError.DataBaseError(error)
+        }
+    }
+    getUserPassword = async (userId) => {
+        try {
+            return await dbNews.getOneDataByCriteria({_id: userId}, 'password');
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
@@ -68,7 +83,7 @@ class UserRepository {
 
     loginUser = async (userMail) => {
         try {
-            return await dbNews.getOneDataByСriteria({email: userMail});
+            return await dbNews.getOneDataByCriteria({email: userMail});
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
@@ -77,7 +92,7 @@ class UserRepository {
     activateUser = async (activationLink) => {
         try {
 
-            const user = await dbNews.getOneDataByСriteria({activationLink});
+            const user = await dbNews.getOneDataByCriteria({activationLink});
 
             if (!user) {
                 throw ApiError.BadRequest('Wrong activation link');

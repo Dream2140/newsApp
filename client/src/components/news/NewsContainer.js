@@ -1,79 +1,82 @@
-import React, {useEffect, useState} from 'react';
-import {Card, Container, Grid, Skeleton} from "@mui/material";
+import React, {useEffect, useMemo, useState} from 'react';
+import {Container, Grid} from "@mui/material";
 import NewsCard from "./NewsCard";
-import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
-import {LIMIT_OF_NEWS, NEWS_API} from "../../variables/variables";
+import {LIMIT_OF_NEWS} from "../../variables/variables";
 import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    getNews,
+    getSearch,
+    hasNewsError,
+    hasNextNewsPage,
+    isNewsLoading,
+    selectedCategory
+} from "../../store/accessors/news";
+import {fetchNews} from "../../store/actions/news";
 
 
 const NewsContainer = () => {
-
-    const [news, setNews] = useState([]);
     const [page, setPage] = useState(1);
-    const [loading, setLoading] = useState(true);
-    const [hasNextPage, setHasNextPage] = useState(false);
+    const dispatch = useDispatch();
 
-    const fetchData = async () => {
-        setLoading(true);
+    const news = useSelector(getNews);
+    const loading = useSelector(isNewsLoading);
+    const error = useSelector(hasNewsError);
+    const search = useSelector(getSearch);
 
-        const start = Date.now();
-        const response = await axios.get(NEWS_API, {
-            params: {
-                limit: LIMIT_OF_NEWS,
-                page: page
-            }
-        });
-        const duration = Date.now() - start;
-        const delay = duration < 500 ? 300 : 0;
+    const category = useSelector(selectedCategory);
+    const nextPage = useSelector(hasNextNewsPage);
 
-        setTimeout(() => {
-            setNews(news.concat(response.data.docs));
-            setHasNextPage(response.data.hasNextPage);
-            setLoading(false);
-        }, delay);
-    };
+    const params = useMemo(() => ({
+        limit: LIMIT_OF_NEWS,
+        page,
+        category
+    }), [page, category]);
 
     useEffect(() => {
-        fetchData();
-    }, [page]);
 
-    const handleScroll = () => {
-        if (
-            window.innerHeight + document.documentElement.scrollTop
-            !== document.documentElement.offsetHeight
-        ) {
-            return;
+        dispatch(fetchNews(params));
+    }, [dispatch, params, category]);
+
+    const newsList = useMemo(() => {
+        if (category !== "all") {
+            return news.filter((newsItem) => newsItem.category[0] === category);
+        } else if (search) {
+            return news;
+        } else {
+            return news;
         }
-
-        if (loading || !hasNextPage) {
-            return;
-        }
-        setPage(page + 1);
-    };
-
-    useEffect(() => {
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, [handleScroll]);
+    }, [news, category, search]);
 
     return (
         <>
+            {error && <Container>{error}</Container>}
             <InfiniteScroll
                 dataLength={news.length}
+                endMessage={
+                    <p style={{textAlign: 'center'}}>
+                        <b>No more news yet</b>
+                    </p>
+                }
                 next={() => setPage(page + 1)}
-                hasMore={hasNextPage}
-
+                hasMore={nextPage}
             >
-                <Container sx={{marginTop: '100px', marginBottom: '100px'}}>
-
+                <Container sx={{marginBottom: "100px"}}>
                     <Grid container spacing={3}>
-                        {(loading ? Array.from(new Array(8)) : news).map((newsItem, index) => (
-
-                            newsItem ? (
-
+                        {loading
+                            ? Array.from(new Array(8)).map((newsItem, index) => (
+                                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                                    <NewsCard loading={true}/>
+                                </Grid>
+                            ))
+                            : newsList.map((newsItem) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={newsItem._id}>
-                                    <Link to={`/article/${newsItem.slug}`} state={{...newsItem}} style={{textDecoration: 'none'}}>
+                                    <Link
+                                        to={`/article/${newsItem.slug}`}
+                                        state={{...newsItem}}
+                                        style={{textDecoration: "none"}}
+                                    >
                                         <NewsCard
                                             loading={false}
                                             imageUrl={newsItem.image}
@@ -82,15 +85,7 @@ const NewsContainer = () => {
                                         />
                                     </Link>
                                 </Grid>
-
-                            ) : (
-                                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                                    <NewsCard
-                                        loading={true}
-                                    />
-                                </Grid>
-                            )
-                        ))}
+                            ))}
                     </Grid>
                 </Container>
             </InfiniteScroll>

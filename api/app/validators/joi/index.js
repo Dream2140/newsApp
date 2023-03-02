@@ -6,7 +6,7 @@ module.exports = (schema) => (req, res, next) => {
 
     if (error) {
 
-        console.log(error)
+        console.error(error)
 
         throw ApiError.BadRequest(error.details[0].message);
     }

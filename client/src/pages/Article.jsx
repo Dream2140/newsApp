@@ -1,34 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {useLocation, useParams} from "react-router-dom";
+import {useLocation} from "react-router-dom";
 import {Card, CardContent, CardMedia, Container, Grid} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import Comment from "../components/Comment";
-import CommentForm from "../components/CommentForm";
-import axios from "axios";
-import {COMMENT_API} from "../variables/variables";
-import Box from "@mui/material/Box";
-import {useSelector} from "react-redux";
+import CommentsList from "../components/comment/CommentsList";
+import React from 'react';
 
-
-
-const Article = ({location}) => {
-    const isAuthenticated = useSelector(state => state.user.isAuthenticated);
+const Article = () => {
     const {state} = useLocation();
-    const {id, title,text, image}=state
-    const COMMENTS_LIST_URL = COMMENT_API+ 'news-coments/'+id;
-    const [comments,setComments] = useState([]);
-    const fetchComments = async ()=>{
-        const response = await axios.get(COMMENTS_LIST_URL,{id})
-
-        setComments(response.data);
-    }
-    useEffect( ()=>{
-        fetchComments()
-    },[])
-
+    const {id, title, text, image} = state;
 
     return (
-            <Container>
+        <Container>
+
             <Grid container spacing={3} sx={{marginTop: '100px', marginBottom: '100px'}}>
                 <Grid item xs={12}>
                     <Card>
@@ -49,18 +31,8 @@ const Article = ({location}) => {
                 </Grid>
             </Grid>
 
-                <Grid container spacing={2}>
-                    {isAuthenticated&&<CommentForm/>}
-
-                    { comments.length ?(   comments.map((comment, index) => (
-
-                        <Comment key={comment._id} author={comment.author} date={comment.publishedAt} text={comment.content} />
-                    ))):(
-                        <Box>There are no comment yet</Box>
-                    )}
-                </Grid>
-
-            </Container>
+            <CommentsList newsId={id}/>
+        </Container>
     );
 };
 

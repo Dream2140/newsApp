@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {TextField} from "@mui/material";
 
 const EmailInput = ({onChange}) => {
     const [emailError, setEmailError] = useState(false);
-    const [email,setEmail] = useState('')
+    const [email, setEmail] = useState('')
 
     useEffect(() => {
         onChange(email);

@@ -29,8 +29,8 @@ class NewsService {
         return await NewsRepository.getNewsByTitle(newsTitle);
     }
 
-    getAllNews = async (page, limit) => {
-        return await NewsRepository.getAllNews(page, limit);
+    getAllNews = async (page, limit, category) => {
+        return await NewsRepository.getAllNews(page, limit, category);
     }
 
     getNewsById = async (newsId) => {
@@ -46,6 +46,14 @@ class NewsService {
         }
 
         return `Nothing to delete`
+    }
+
+    getNewsByCategory = async (category, page) => {
+        return await NewsRepository.getNewsByCategory(category, page);
+    }
+
+    getNewsFromGuardian = async () => {
+        return await NewsRepository.getNewsFromGuardian();
     }
 }
 

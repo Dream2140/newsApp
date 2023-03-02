@@ -17,13 +17,12 @@ module.exports = function (req, res, next) {
         }
 
         const userData = tokenService.validateAccessToken(accessToken);
-
-        if (userData.role!=='ADMIN') {
+        if (userData.role !== 'ADMIN') {
             return next(ApiError.NotAllowedError());
         }
 
         next();
     } catch (e) {
-         throw e;
+        throw e;
     }
 };

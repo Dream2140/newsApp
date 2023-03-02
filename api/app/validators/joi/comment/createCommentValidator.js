@@ -6,6 +6,7 @@ const validateRequest = require('../index');
 const schema = Joi.object({
     body: {
         content: Joi.string().min(3).required(),
+        nickname: Joi.string().min(3).required(),
         userId: Joi.string().guid({
             version: [
                 'uuidv4'

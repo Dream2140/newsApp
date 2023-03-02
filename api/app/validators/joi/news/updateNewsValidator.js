@@ -15,6 +15,7 @@ const schema = Joi.object({
         text: Joi.string().min(3),
         publishedAt: Joi.string(),
         slug: Joi.any(),
+        category: Joi.array().required(),
     }
 }).unknown(true);
 

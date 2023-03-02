@@ -1,11 +1,13 @@
 import React from 'react';
-import {Container, Grid} from "@mui/material";
-import Header from "../components/Header";
 import NewsContainer from "../components/news/NewsContainer";
+import CategoriesBar from "../components/CategoriesBar";
 
 const Home = () => {
     return (
-        <NewsContainer/>
+        <>
+            <CategoriesBar/>
+            <NewsContainer/>
+        </>
     );
 };
 

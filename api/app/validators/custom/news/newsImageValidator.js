@@ -1,6 +1,7 @@
 const ApiError = require('../../../exceptions/ApiError');
 
 module.exports = function newsImageValidator(req, res, next) {
+
     if (!req.file) {
         throw ApiError.BadRequest('Image is required field');
     }

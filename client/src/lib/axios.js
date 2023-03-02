@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {API_URL} from "../variables/variables";
 import {API_PATH} from "../helpres/apiPath";
-
+import {store} from "../store";
+import {showSnackbar} from "../store/actions/snackbar";
 
 const $api = axios.create({
     withCredentials: true,
@@ -20,13 +21,13 @@ $api.interceptors.response.use((config) => {
     if (error.response.status == 401 && error.config && !error.config._isRetry) {
         originalRequest._isRetry = true;
         try {
-            const refreshUrl = USER_API + API_PATH.refresh;
+            const refreshUrl = API_PATH.refresh;
 
-            const response = await axios.get(refreshUrl, {withCredentials: true})
+            const response = await axios.get(refreshUrl, {withCredentials: true});
             localStorage.setItem('token', response.data.accessToken);
             return $api.request(originalRequest);
         } catch (e) {
-            console.log('НЕ АВТОРИЗОВАН')
+            store.dispatch(showSnackbar('Not authorize', 'error'))
         }
     }
     throw error;

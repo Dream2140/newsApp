@@ -8,6 +8,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const errorMiddleware = require('./app/middlewares/error.middleware');
 const router = require('./app/routes');
+const imageRouter = require('./app/routes/images.router')
 
 const app = express();
 
@@ -23,7 +24,12 @@ app.use(cors(
 
 app.use('/api/', router);
 
+app.use('/uploads/', imageRouter);
+
 app.use(errorMiddleware);
+
+
+
 
 
 const PORT = process.env.PORT;

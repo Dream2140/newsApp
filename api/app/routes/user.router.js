@@ -11,14 +11,12 @@ const validateUser = require('../validators/custom/user/validateUserFields');
 
 const validateUserId = require('../validators/joi/user/validateUserId');
 
-const updateUserValidator = require('../validators/joi/user/updateUserValidator');
-
 const loginUserValidation = require('../validators/joi/user/loginUserValidation');
 
 
 router.post('/register/', createUserValidator, validateUser.validateRegisterNickname, validateUser.validateRegisterEmail, userController.createUser);
 
-router.get('/user-info/:id',  validateUserId, userController.getUserById);
+router.get('/user-info/:id', validateUserId, userController.getUserById);
 
 router.get('/all-users/', authAminMiddleware, userController.getAllUsers);
 
@@ -26,7 +24,9 @@ router.delete('/delete-user/:id', authAminMiddleware, validateUserId, userContro
 
 router.delete('/delete-all-users/', authAminMiddleware, userController.deleteAllUsers);
 
-router.put('/update-user/:id',authUserMiddleware, updateUserValidator, userController.updateUserById);
+router.put('/update-user/:id', authUserMiddleware, userController.updateUserById);
+
+router.put('/update-password/:id', authUserMiddleware, userController.updatePassword);
 
 router.post('/login', loginUserValidation, validateUser.validateLoginEmail, userController.loginUser);
 

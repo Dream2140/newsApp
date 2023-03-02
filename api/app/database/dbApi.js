@@ -19,12 +19,11 @@ module.exports = class Database {
         return this.model.deleteOne(criteria);
     }
 
-    getDataByСriteria = async (criteria, fields) => {
-
-        return await this.model.find(criteria, fields);
+    getDataByCriteria = async (criteria, fields) => {
+        return await this.model.find(criteria, fields).sort({publishedAt: 'desc'}).exec();
     }
 
-    getOneDataByСriteria = async (criteria, fields) => {
+    getOneDataByCriteria = async (criteria, fields) => {
         return await this.model.findOne(criteria, fields);
     }
 

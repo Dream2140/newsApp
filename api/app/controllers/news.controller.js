@@ -17,14 +17,15 @@ class NewsController {
     createNews = async (req, res, next) => {
         try {
 
-            const imagePath = 'downloads/' + req.file.originalname;
+            const imagePath = process.env.API_URL + '/uploads/' + req.file.filename;
 
             const newsData = {
                 title: req.body.title,
                 publishedAt: req.body.publishedAt,
                 text: req.body.text,
                 slug: req.body.slug,
-                image: imagePath
+                image: imagePath,
+                category: req.body.category
             }
 
             const data = await newsService.createNews(newsData);
@@ -66,10 +67,9 @@ class NewsController {
 
     getNewsByTitle = async (req, res, next) => {
         try {
+            const {title} = req.query;
 
-            const {title} = req.body;
-            const news = await newsService.getNewsByTitle(title);
-
+            const news = await newsService.getNewsByTitle(title.toLowerCase());
             return res.status(200).json(news);
 
         } catch (e) {
@@ -82,8 +82,9 @@ class NewsController {
 
             const page = req.query.page || 1;
             const limit = req.query.limit || 10;
+            const category = req.query.category?.toLowerCase() || 'all';
 
-            const news = await newsService.getAllNews(page, limit);
+            const news = await newsService.getAllNews(page, limit, category);
 
             return res.status(200).json(news);
 
@@ -110,6 +111,31 @@ class NewsController {
             const news = await newsService.deleteAllNews();
 
             return res.status(200).json(news);
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    getNewsByCategory = async (req, res, next) => {
+        try {
+            const {category, page} = req.query;
+
+            const news = await newsService.getNewsByCategory(category, page);
+
+            return res.status(200).json(news);
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    getNewsFromGuardian = async (req, res, next) => {
+        try {
+
+            const data = await newsService.getNewsFromGuardian();
+
+            return res.status(200).json(data);
 
         } catch (e) {
             next(e);

@@ -1,20 +1,20 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-
-import App from './App';
+import './index.css';
 import CssBaseline from "@mui/material/CssBaseline";
 import {Provider} from "react-redux";
-import {store} from './store';
+import {persistedStore, store} from './store';
+import {PersistGate} from "redux-persist/integration/react";
+import router from "./router";
+import {RouterProvider} from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <Provider store={store}>
+    <Provider store={store}>
+        <PersistGate persistor={persistedStore}>
             <CssBaseline/>
-            <App/>
-        </Provider>
-    </React.StrictMode>
+            <RouterProvider router={router}/>
+        </PersistGate>
+    </Provider>
 )
-;
 
 

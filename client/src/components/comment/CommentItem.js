@@ -1,20 +1,21 @@
 import React from 'react';
 import {Avatar, Card, CardContent, CardHeader, Grid} from "@mui/material";
 import Typography from "@mui/material/Typography";
+import Helper from "../../helpres/Helper";
 
-const Comment = ({ author, date, text }) => {
+const CommentItem = ({nickname, date, text}) => {
 
     return (
         <Grid item xs={12}>
-            <Card >
+            <Card>
                 <CardHeader
                     avatar={
                         <Avatar aria-label="author">
-                           G
+                            {nickname[0]}
                         </Avatar>
                     }
-                    title={author}
-                    subheader={date}
+                    title={nickname}
+                    subheader={Helper.formatDate(date)}
                 />
                 <CardContent>
                     <Typography variant="body2" color="textSecondary" component="p">
@@ -26,4 +27,4 @@ const Comment = ({ author, date, text }) => {
     );
 };
 
-export default Comment;
+export default CommentItem;

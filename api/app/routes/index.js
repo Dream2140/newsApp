@@ -12,8 +12,9 @@ router.use('/user/', userRouter);
 
 router.use('/comment/', commentsRouter);
 
+
 router.all('*', (request, response) => {
-    response.status(404).json({message:'Route not found'});
+    response.status(404).json({message: 'Route not found'});
 });
 
 module.exports = router;

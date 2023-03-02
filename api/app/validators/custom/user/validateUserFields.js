@@ -50,4 +50,5 @@ class validateUser {
         next();
     }
 }
+
 module.exports = new validateUser();

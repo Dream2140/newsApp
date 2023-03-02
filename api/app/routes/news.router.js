@@ -48,9 +48,9 @@ const getNewsByIdValidator = require('../validators/joi/news/getNewsByIdValidato
 
 const newsImageValidator = require('../validators/custom/news/newsImageValidator');
 
-const getAllNewsValidator = require('../validators/joi/news/getAllNewsValidator');
-
 router.get('/update-from-cybersport/', newsController.getAllNewsFromCybersport);
+
+router.get('/update-from-guardian/', newsController.getNewsFromGuardian);
 
 router.post('/post-news/', upload.single('image'), newsImageValidator, createNewsValidator, newsController.createNews);
 
@@ -65,5 +65,7 @@ router.get('/get-news-by-title/', getNewsByTitleValidator, newsController.getNew
 router.get('/get-news-by-id/:id/', getNewsByIdValidator, newsController.getNewsById);
 
 router.get('/get-all-news/', newsController.getAllNews);
+
+router.get('/category/', newsController.getNewsByCategory);
 
 module.exports = router;

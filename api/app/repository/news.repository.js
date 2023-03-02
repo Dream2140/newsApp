@@ -11,33 +11,37 @@ const dbNews = new Database(News);
 class NewsRepository {
     getAllTasksFromCybersport = async () => {
 
-            const response = await axios.get(Variables.cybersportNewsLineLink);
+        const response = await axios.get(Variables.cybersportNewsLineLink);
+        if (!response.data.data) {
 
-            const data = await response.data.data.reduce(async (acc,item) => {
+            throw  ApiError.DataBaseError('cybersport')
+        }
+        const data = await response.data.data.reduce(async (acc, item) => {
+            const previousValue = await acc;
 
-                if(await dbNews.checkExistence({ title: item.attributes.title })){
-                    return;
-                }
-
-                const previousValue = await acc;
-
-                previousValue.push( {
-                    'id': crypto.randomUUID(),
-                    'title': item.attributes.title,
-                    'publishedAt': item.attributes.publishedAt,
-                    'slug': item.attributes.slug,
-                    'image': Variables.cybersportImageLink + item.attributes.image,
-                    'text': await this.getTextDataFromCybersport(item.id)
-                });
-
+            if (await dbNews.checkExistence({title: item.attributes.title})) {
                 return previousValue;
-            },[]);
-
-            if(!data){
-                throw ApiError.BadRequest('All news upp to date')
             }
 
-            return await dbNews.saveData(data);
+
+            previousValue.push({
+                'id': crypto.randomUUID(),
+                'title': item.attributes.title,
+                'publishedAt': item.attributes.publishedAt,
+                'slug': item.attributes.slug,
+                'image': Variables.cybersportImageLink + item.attributes.image,
+                'text': await this.getTextDataFromCybersport(item.id),
+                'category': 'cybersport'
+            });
+
+            return previousValue;
+        }, []);
+
+        if (!data) {
+            throw ApiError.BadRequest('All news upp to date')
+        }
+
+        return await dbNews.saveData(data);
 
     }
 
@@ -45,7 +49,7 @@ class NewsRepository {
         const news = await axios.get(Variables.cybersportOneNewsLink + newsId);
 
         try {
-            const text = news.data.data.attributes.content.blocks
+            return news.data.data.attributes.content.blocks
                 .map(item => {
 
                     try {
@@ -59,9 +63,7 @@ class NewsRepository {
                     }
                 })
                 .join(' ')
-
-            return text;
-        } catch (e){
+        } catch (e) {
             return ''
         }
     }
@@ -93,28 +95,25 @@ class NewsRepository {
 
     getNewsByTitle = async (newsTitle) => {
         try {
+            const query = {title: new RegExp(newsTitle, 'i')};
 
-            const regex = new RegExp(newsTitle, 'i');
-
-            return await dbNews.getDataByСriteria({title: regex});
+            return await dbNews.getDataByCriteria(query);
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
     }
 
-    getAllNews = async (page, limit) => {
+    getAllNews = async (page, limit, category) => {
         try {
             const options = limit === '-1' ? {
                 pagination: false,
             } : {
                 page: page,
                 limit: limit,
-
             };
+            const query = category !== 'all' ? {category: category} : {};
 
-            const news= await News.paginate({}, options);
-
-            return news
+            return await News.paginate(query, options);
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
@@ -122,7 +121,7 @@ class NewsRepository {
 
     getNewsById = async (newsId) => {
         try {
-            return await dbNews.getDataByСriteria({_id: newsId});
+            return await dbNews.getDataByCriteria({_id: newsId});
         } catch (error) {
             throw ApiError.DataBaseError(error)
         }
@@ -136,6 +135,65 @@ class NewsRepository {
         }
     }
 
+    getNewsByCategory = async (category, page) => {
+        try {
+            const options = {
+                page: page || 1,
+                limit: Variables.defaultNewsLimit,
+            };
+
+            const query = {category: category.toLowerCase()};
+
+            return await News.paginate(query, options);
+
+        } catch (error) {
+            throw ApiError.DataBaseError(error)
+        }
+    }
+
+    getNewsFromGuardian = async () => {
+        try {
+            const pageSize = 100;
+            const showFields = 'headline,bodyText,thumbnail';
+            const showTags = 'keyword';
+            const response = await axios.get(Variables.guardianNewsLineLink, {
+                params: {
+                    'api-key': process.env.GUARDIAN_API_KEY,
+                    'page-size': pageSize,
+                    'show-fields': showFields,
+                    'show-tags': showTags,
+                },
+            });
+
+            const newsList = await response.data.response.results.reduce(async (acc, result) => {
+                const previousValue = await acc;
+                if (await dbNews.checkExistence({title: result.webTitle})) {
+                    return previousValue;
+                }
+
+
+                previousValue.push({
+                    title: result.webTitle,
+                    publishedAt: Date.parse(result.webPublicationDate),
+                    text: result.fields.bodyText,
+                    slug: Utils.formatUrlString(result.id),
+                    image: result.fields.thumbnail,
+                    category: 'politic',
+                });
+
+                return previousValue;
+            }, []);
+
+            if (!newsList) {
+                throw ApiError.BadRequest('All news upp to date')
+            }
+
+            return await dbNews.saveData(newsList);
+        } catch (error) {
+            throw ApiError.DataBaseError(error)
+        }
+
+    }
 }
 
 module.exports = new NewsRepository();

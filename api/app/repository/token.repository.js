@@ -18,7 +18,7 @@ class TokenRepository {
 
     getToken = async (tokenData) => {
         try {
-            return await dbToken.getOneDataByСriteria(tokenData);
+            return await dbToken.getOneDataByCriteria(tokenData);
 
         } catch (error) {
             throw ApiError.DataBaseError(error)

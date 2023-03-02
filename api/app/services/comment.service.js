@@ -10,8 +10,8 @@ class CommentService {
     getComment = async (commentId) => {
         return await commentRepository.getComment(commentId);
     }
-    udateCommentById = async (commentId,data) => {
-        return await commentRepository.udateCommentById(commentId,data);
+    udateCommentById = async (commentId, data) => {
+        return await commentRepository.udateCommentById(commentId, data);
     }
 
     deleteCommentById = async (commentId) => {

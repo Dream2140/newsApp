@@ -9,6 +9,7 @@ const schema = Joi.object({
         text: Joi.string().min(3).required(),
         publishedAt: Joi.string().required(),
         slug: Joi.any().required(),
+        category: Joi.string().required(),
     }
 }).unknown(true);
 

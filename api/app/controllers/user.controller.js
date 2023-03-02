@@ -1,5 +1,4 @@
 const userService = require('../services/user.service');
-const newsService = require("../services/news.service");
 
 class UserController {
 
@@ -46,9 +45,22 @@ class UserController {
         }
     }
 
+    updatePassword = async (req, res, next) => {
+        try {
+            const {id} = req.params;
+
+            const {currentPassword, newPassword} = req.body;
+            const updatedUser = await userService.updatePassword(id, currentPassword, newPassword);
+
+            return res.status(200).json(updatedUser);
+
+        } catch (e) {
+            next(e);
+        }
+    }
+
     getAllUsers = async (req, res, next) => {
         try {
-
             const page = req.query.page || 1;
             const limit = req.query.limit || '-1';
 
