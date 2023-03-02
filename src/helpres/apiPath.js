@@ -1,5 +1,7 @@
+import {API_URL} from "../variables/variables";
+
 export class API_PATH {
-    static baseUrl = "http://localhost:5001/";
+    static baseUrl = API_URL;
 
     static get authUser() {
         return this.baseUrl + "api/user/login/";
