@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Dream2140/static/css/main.cd71539c.css",
+    "main.js": "/Dream2140/static/js/main.061f229f.js",
+    "index.html": "/Dream2140/index.html",
+    "main.cd71539c.css.map": "/Dream2140/static/css/main.cd71539c.css.map",
+    "main.061f229f.js.map": "/Dream2140/static/js/main.061f229f.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.cd71539c.css",
+    "static/js/main.061f229f.js"
+  ]
+}
