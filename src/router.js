@@ -35,7 +35,9 @@ const router = createBrowserRouter([
                 element: <Home/>
             },
         ]
-    }],
+    }],{
+    basename:'/newsApp'
+    }
 );
 
 export default router;
