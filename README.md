@@ -1,5 +1,5 @@
 
-# News App: MERN Stack News Application
+# MERN Stack News Application
 
 This is a MERN stack news app with news line, acticle pages with comments list, admin and user profile pages.
 
