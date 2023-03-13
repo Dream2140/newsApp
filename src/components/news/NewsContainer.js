@@ -64,18 +64,45 @@ const NewsContainer = () => {
             >
                 <Container sx={{marginBottom: "100px"}}>
                     <Grid container spacing={3}>
-                        {loading
-                            ? Array.from(new Array(8)).map((newsItem, index) => (
-                                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                                    <NewsCard loading={true}/>
-                                </Grid>
-                            ))
-                            : newsList.map((newsItem) => (
+                        {loading ? (
+                            newsList.length > 8 ? (
+                                <>
+                                    {newsList.map((newsItem) => (
+                                        <Grid item xs={12} sm={6} md={4} lg={3} key={newsItem._id}>
+                                            <Link
+                                                to={`/article/${newsItem.slug}`}
+                                                state={{ ...newsItem }}
+                                                style={{ textDecoration: "none" }}
+                                            >
+                                                <NewsCard
+                                                    loading={false}
+                                                    imageUrl={newsItem.image}
+                                                    title={newsItem.title}
+                                                    description={newsItem.text}
+                                                />
+                                            </Link>
+                                        </Grid>
+                                    ))}
+                                    {Array.from(new Array(8)).map((newsItem, index) => (
+                                        <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                                            <NewsCard loading={true} />
+                                        </Grid>
+                                    ))}
+                                </>
+                            ) : (
+                                Array.from(new Array(8)).map((newsItem, index) => (
+                                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                                        <NewsCard loading={true} />
+                                    </Grid>
+                                ))
+                            )
+                        ) : (
+                            newsList.map((newsItem) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={newsItem._id}>
                                     <Link
                                         to={`/article/${newsItem.slug}`}
-                                        state={{...newsItem}}
-                                        style={{textDecoration: "none"}}
+                                        state={{ ...newsItem }}
+                                        style={{ textDecoration: "none" }}
                                     >
                                         <NewsCard
                                             loading={false}
@@ -85,8 +112,10 @@ const NewsContainer = () => {
                                         />
                                     </Link>
                                 </Grid>
-                            ))}
+                            ))
+                        )}
                     </Grid>
+
                 </Container>
             </InfiniteScroll>
         </>
